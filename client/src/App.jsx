@@ -1,12 +1,17 @@
 import "./App.css";
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { apolloClient } from "./apolloClient";
+
+const client = new ApolloClient({
+  // Provide required constructor fields
+  cache: new InMemoryCache(),
+  uri: "http://localhost:3001",
+});
 
 function App() {
   return (
-    <ApolloProvider client={apolloClient}>
+    <ApolloProvider client={client}>
       <Navbar />
       <Outlet />
     </ApolloProvider>
