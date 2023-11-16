@@ -2,7 +2,6 @@ const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const path = require("path");
 const db = require("./config/connection");
-// const routes = require('./routes');
 const { typeDefs, resolvers } = require("./schema");
 
 const app = express();
@@ -22,7 +21,9 @@ const server = new ApolloServer({
   resolvers,
 });
 
-app.use(routes);
+server.applyMiddleware({ app });
+
+// app.use(routes); dont need this
 
 db.once("open", () => {
   app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));

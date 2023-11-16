@@ -3,25 +3,18 @@ const { signToken } = require("../utils/auth");
 
 const resolvers = {
   Query: {
-    getSingleUser: async (_, { id, username }) => {
-      try {
-        const foundUser = await User.findOne({
-          $or: [{ _id: id }, { username }],
-        });
-
-        if (!foundUser) {
-          throw new Error("Cannot find a user with this id!");
-        }
-
-        return foundUser;
-      } catch (err) {
-        console.log(err);
-        throw new Error("Internal server error");
+    me: async (parent, args, context) => {
+      if (context.user) {
+        const userData = await User.findOne({ _id: context.user._id }).select(
+          "-__v -password"
+        );
+        return userData;
       }
+      throw new AuthenticationError("You need to be logged in!");
     },
   },
   Mutation: {
-    createUser: async (_, { input }) => {
+    addUser: async (_, { input }) => {
       try {
         const user = await User.create(input);
 
